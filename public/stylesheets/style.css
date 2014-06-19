@@ -1,8 +1,30 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  height: 100%;
 }
 
 a {
   color: #00B7FF;
+}
+
+#chatUsers{
+	width: 10%;
+	height: 300px;
+	float: left;
+	border: #CBCBB2 solid;
+	border-radius: 10px;
+}
+
+#chatEntries{
+	margin-left: 15%;
+	width: 50%;
+	height: 300px;
+	border: #CBCBB2 solid;
+	border-radius: 10px;
+}
+
+#messageInput{
+	margin-left: 15%;
+	width: 50%; 
 }
