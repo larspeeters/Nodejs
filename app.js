@@ -1,59 +1,60 @@
+
+/**
+ * Module dependencies.
+ */
+
 var express = require('express');
-var path = require('path');
-var favicon = require('static-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
+var routes = require('./routes');
+var jade = require("jade");
+var mongoose = require('mongoose');
+var user = require('./routes/user');
 var app = express();
+var http = require('http');
 
-// view engine setup
+var path = require('path');
+var mysql =  require('mysql');
+
+
+
+// all environments
+app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
-app.use(favicon());
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
-app.use(cookieParser());
+app.use(express.logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'node_modules')));
 
-app.use('/', routes);
-app.use('/users', users);
-
-/// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+var server = http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
 });
 
-/// error handlers
+var io = require('socket.io').listen(server);
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
+// development only
+var connection =  mysql.createConnection({
+  	host : 'localhost',
+  	user : 'root',
+  	password: 'A123456)'
+});
+
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+app.get('/', function(req, res){
+  res.render('index.jade');
+});
+
+io.sockets.on('connection', function(socket){
+	socket.on('send message', function(msg){
+		io.sockets.emit('new message', msg);
+		//socket.broadcast.emit('new message', msg); //Sends msg to everyone except sender	
+	});
 });
 
 
-module.exports = app;

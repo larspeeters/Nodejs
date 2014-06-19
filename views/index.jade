@@ -1,5 +1,24 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+		div.container
+					header
+						h1 WebChat
+					div#chatUsers
+					ul#chatEntries
+					div.row#entries
+					form#Chat(action='',method='post')
+						input(type='text')#messageInput
+						button.btn#submit(data-loading-text="Send") Send
+		script.
+			$(document).ready(function() {
+				var socket = io.connect();
+				$('#Chat').submit(function(e){
+					e.preventDefault();
+					socket.emit('send message', $('#messageInput').val());
+				});
+				
+				socket.on('new message', function(data){
+					$('#chatEntries').append("<li class='UsrSay'>"+data+"</li>");
+				});
+			});
