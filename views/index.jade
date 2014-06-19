@@ -4,9 +4,16 @@ block content
 		div.container
 					header
 						h1 WebChat
-					div#chatUsers
+					ul#chatUsers
+						li.users#player1
+							a(href="/player1") Player 1 join
+						li.users
+							a(href="/player2") Player 2 join
+						li.users
+							a(href="/player3") Player 3 join
+						li.users
+							a(href="/player4") Player 4 join
 					ul#chatEntries
-					div.row#entries
 					form#Chat(action='',method='post')
 						input(type='text')#messageInput
 						button.btn#submit(data-loading-text="Send") Send
@@ -20,5 +27,13 @@ block content
 				
 				socket.on('new message', function(data){
 					$('#chatEntries').append("<li class='UsrSay'>"+data+"</li>");
+				});
+				
+				socket.on('player', function(data){
+					$(data[0]['player']).html(data[0]['name'] +" joined.");
+				});
+				
+				socket.on('dc', function(data){
+					$(data.player).html("<li class='users' id='+data.player+' ><a href='/' >Join</a>");
 				});
 			});

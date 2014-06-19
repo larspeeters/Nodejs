@@ -1,0 +1,26 @@
+extends layout
+
+block content
+		div.container
+					header
+						h1 Player 1
+					form#playerSubmit(action='',method='post')
+						label Enter username:
+						input(type='text')#name
+						button.btn#submit(data-loading-text="Send") Send
+					div#player1
+		script.
+			$(document).ready(function() {
+				var socket = io.connect();
+				$('#playerSubmit').submit(function(e){
+					e.preventDefault();
+					socket.emit('new player', {name: $('#name').val(), player: "#player1"}, function(data){
+						if(data){
+							$('#playerSubmit').hide();
+							$('#player1').html("Welcome "+$('#name').val());
+						}else{
+							$('#player1').html($('#name').val()+" already taken.");
+						}
+					});
+				});
+			});
