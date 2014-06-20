@@ -14,7 +14,7 @@ block content
 				var socket = io.connect();
 				$('#playerSubmit').submit(function(e){
 					e.preventDefault();
-					socket.emit('new player', {name: $('#name').val(), player: "#player1"}, function(data){
+					socket.emit('new player', {name: $('#name').val(), player: "player1"}, function(data){
 						if(data){
 							$('#playerSubmit').hide();
 							$('#player1').html("Welcome "+$('#name').val());
