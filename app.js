@@ -21,6 +21,7 @@ var mysql =  require('mysql');
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.use(express.favicon(__dirname + '/public/images/favicon.ico'));
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
@@ -54,10 +55,18 @@ app.get('/', function(req, res){
 app.get('/player1', function(req, res){
   res.render('player1.jade');
 });
+app.get('/player2', function(req, res){
+  res.render('player2.jade');
+});
+app.get('/player3', function(req, res){
+  res.render('player3.jade');
+});
+app.get('/player4', function(req, res){
+  res.render('player4.jade');
+});
 
 io.sockets.on('connection', function(socket){
 	socket.on('new player', function(data, callback){
-		console.log(data);
 		if(nicknames.indexOf(data) != -1){
 			callback(false); //Username already in array
 		}else{
