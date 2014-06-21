@@ -6,7 +6,7 @@ block content
 						h1 Player 1
 					form#playerSubmit(action='',method='post')
 						label Enter username:
-						input(type='text')#name
+						input(type='text').p1#name
 						br
 						button.btn#submit(data-loading-text="Send") Connect
 					div#Feedback
@@ -28,6 +28,10 @@ block content
 					});
 				});
 				$('#player1').click(function(e){
-					window.reload();
+					socket.disconnect();
+					$('#player1').hide();
+					$('#playerSubmit').slideDown("slow");
+					$('#Feedback').html("");
+					socket.socket.reconnect();
 				});
 			});
