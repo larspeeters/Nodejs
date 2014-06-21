@@ -1,26 +1,33 @@
 extends layout
 
 block content
-		div.container
+		div.wrapper
 					header
 						h1 Player 1
 					form#playerSubmit(action='',method='post')
 						label Enter username:
 						input(type='text')#name
-						button.btn#submit(data-loading-text="Send") Send
-					div#player1
+						br
+						button.btn#submit(data-loading-text="Send") Connect
+					div#Feedback
+					div.dc#player1 Disconnect
 		script.
 			$(document).ready(function() {
-				var socket = io.connect();
+			$('body').addClass("p1");
+			var socket = io.connect();
 				$('#playerSubmit').submit(function(e){
 					e.preventDefault();
 					socket.emit('new player', {name: $('#name').val(), player: "player1"}, function(data){
 						if(data){
-							$('#playerSubmit').hide();
-							$('#player1').html("Welcome "+$('#name').val());
+							$('#playerSubmit').slideUp("slow");
+							$('#Feedback').html($('#name').val()+" connected");
+							$('.dc').show();
 						}else{
-							$('#player1').html($('#name').val()+" already taken.");
+							$('#Feedback').html($('#name').val()+" already taken.");
 						}
 					});
+				});
+				$('#player1').click(function(e){
+					window.reload();
 				});
 			});
