@@ -34,4 +34,7 @@ block content
 					$('#Feedback').html("");
 					socket.socket.reconnect();
 				});
+				$(document).mousemove(function(event){
+					socket.emit('move', {X: event.pageX, Y: event.pageY});
+				});
 			});

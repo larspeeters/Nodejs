@@ -3,35 +3,42 @@ extends layout
 block content
 		div.container
 					header
-					nav#chatUsers
+					nav#PlayerList
 						div.users
 							a#player1(href="/player1")
 								img.player(src="images/games.ico",width=80,height=80)
-								span Player 1 join
+								span bit.ly/1uTMXNd
 						div.users
 							a#player2(href="/player2")
 								img.player(src="images/games.ico",width=80,height=80) 
-								span Player 2 join
+								span bit.ly/1lJGXFy
 						div.users
 							a#player3(href="/player3") 
 								img.player(src="images/games.ico",width=80,height=80)
-								span Player 3 join
+								span bit.ly/1m1hcMR
 						div.users
 							a#player4(href="/player4") 
 								img.player(src="images/games.ico",width=80,height=80)
-								span Player 4 join
-					ul#chatEntries
+								span bit.ly/1pAllNw
+					div#Game
+						div#dot
 		script.
 			$(document).ready(function() {
 				var socket = io.connect();				
 				socket.on('player', function(data){
-					console.log(data);
-					$('#'+data[0]['player']).parent().addClass("rotate "+data[0]['player']);
-					$('#'+data[0]['player']).html("<img class='player' src='images/games.ico' width='80px' height='80px' ><span>"+data[0]['name'] +" joined.</span>");
+					var count = (data.length - 1);
+					$('#'+data[count]['player']).parent().addClass("rotate "+data[count]['player']);
+					$('#'+data[count]['player']).html("<img class='player' src='images/games.ico' width='80px' height='80px' ><span>"+data[count]['name'] +" joined.</span>");
 				});
 				
 				socket.on('dc', function(data){
 					$('#'+data.player).parent().removeClass("rotate "+data.player);
 					$('#'+data.player).html("<img class='player' src='images/games.ico' width='80px' height='80px' ><span>"+data.player+" join</span>");
+				});
+				
+				socket.on('moved', function(data){
+					//$('#Game').html("X: "+data['X']+" ,Y: "+data['Y']);
+					$('#dot').css('top', data['Y']);
+					$('#dot').css('left', data['X']);
 				});
 			});

@@ -48,21 +48,21 @@ if ('development' == app.get('env')) {
 
 }
 
-app.get('/', function(req, res){
-  res.render('index.jade');
+app.get('/', routes.index);
+app.get('/v', function(req, res){
+  res.render('video.jade', { title: 'jade\'s snake | Player 1' });
 });
-
 app.get('/player1', function(req, res){
-  res.render('player1.jade');
+  res.render('player1.jade', { title: 'jade\'s snake | Player 1' });
 });
 app.get('/player2', function(req, res){
-  res.render('player2.jade');
+  res.render('player2.jade', { title: 'jade\'s snake | Player 2' });
 });
 app.get('/player3', function(req, res){
-  res.render('player3.jade');
+  res.render('player3.jade', { title: 'jade\'s snake | Player 3' });
 });
 app.get('/player4', function(req, res){
-  res.render('player4.jade');
+  res.render('player4.jade', { title: 'jade\'s snake | Player 4' });
 });
 
 io.sockets.on('connection', function(socket){
@@ -70,20 +70,19 @@ io.sockets.on('connection', function(socket){
 		if(nicknames.indexOf(data) != -1){
 			callback(false); //Username already in array
 		}else{
+			callback(true);
 			socket.nickname = data;
 			nicknames.push(socket.nickname);
 			io.sockets.emit('player', nicknames);			
 		}
-	});
-	socket.on('send message', function(msg){
-		io.sockets.emit('new message', msg);
-		//socket.broadcast.emit('new message', msg); //Sends msg to everyone except sender	
-	});
-	
+	});	
 	socket.on('disconnect', function(data){
 		if(!socket.nickname) return; //if the user disconnects at login
 		nicknames.splice(nicknames.indexOf(socket.nickname), 1);
 		io.sockets.emit('dc', socket.nickname);		
+	});
+	socket.on('move', function(data){
+		io.sockets.emit('moved', {X: data['X'], Y: data['Y']});			
 	});
 });
 
